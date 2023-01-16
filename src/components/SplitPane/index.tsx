@@ -15,7 +15,6 @@ import { useCollapseOptions } from './hooks/memos/useCollapseOptions';
 // String Unions
 export type SplitType = 'horizontal' | 'vertical';
 export type Direction = 'ltr' | 'rtl';
-export type TransitionType = 'fade' | 'grow' | 'zoom' | 'none';
 export type CollapseDirection = 'left' | 'right' | 'up' | 'down';
 
 export type SplitPaneHooks = {
@@ -27,7 +26,6 @@ export type SplitPaneHooks = {
 export interface CollapseOptions {
   beforeToggleButton: React.ReactElement;
   afterToggleButton: React.ReactElement;
-  buttonTransition: TransitionType;
   buttonTransitionTimeout: number;
   buttonPositionOffset: number;
   collapseDirection: CollapseDirection;

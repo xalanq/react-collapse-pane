@@ -12,7 +12,6 @@ const getDefault = (props: {
   collapseDirection: props.isVertical ? 'left' : 'up',
   overlayCss: { backgroundColor: 'rgba(0, 0, 0, 0.4)' },
   buttonTransitionTimeout: 200,
-  buttonTransition: 'grow',
   collapsedSize: 50,
   collapseTransitionTimeout: 500,
   buttonPositionOffset: 0,

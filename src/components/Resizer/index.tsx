@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Fade } from '@mui/material';
 import { BeginDragCallback } from '../SplitPane/hooks/effects/useDragState';
 import {
   ButtonContainer,
@@ -10,7 +9,6 @@ import {
 } from './helpers';
 import { useMergeClasses } from '../../hooks/useMergeClasses';
 import { CollapseOptions, ResizerOptions } from '../SplitPane';
-import { useTransition } from './hooks/useTransition';
 import { SplitType } from '../SplitPane';
 import { debounce } from '../SplitPane/helpers';
 
@@ -48,7 +46,6 @@ export const Resizer = ({
 
   const classes = useMergeClasses(['Resizer', split, className]);
   const grabberSizeWithUnit = useMemo(() => getSizeWithUnit(grabberSize), [grabberSize]);
-  const Transition = useTransition(collapseOptions);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -109,14 +106,16 @@ export const Resizer = ({
     () => Math.max(100 + (collapseOptions?.buttonPositionOffset ?? 0), 0),
     [collapseOptions]
   );
-  const isTransition = collapseOptions?.buttonTransition !== 'none';
   const collapseButton = collapseOptions ? (
     <ButtonContainer $isVertical={isVertical} $grabberSize={grabberSizeWithUnit} $isLtr={isLtr}>
       <div style={{ flex: `1 1 ${preButtonFlex}` }} />
-      <Transition
-        in={isTransition ? isHovered : true}
-        timeout={isTransition ? collapseOptions.buttonTransitionTimeout : 0}
-        style={{ flex: '0 0 0', position: 'relative' }}
+      <div
+        style={{
+          flex: '0 0 0',
+          position: 'relative',
+          opacity: isHovered ? undefined : 0,
+          transition: `opacity ${collapseOptions.buttonTransitionTimeout}ms ease-in-out`,
+        }}
       >
         <ButtonWrapper
           $isVertical={isVertical}
@@ -125,7 +124,7 @@ export const Resizer = ({
         >
           {isCollapsed ? collapseOptions.afterToggleButton : collapseOptions.beforeToggleButton}
         </ButtonWrapper>
-      </Transition>
+      </div>
       <div style={{ flex: `1 1 ${postButtonFlex}` }} />
     </ButtonContainer>
   ) : null;
@@ -147,15 +146,24 @@ export const Resizer = ({
       >
         {collapseButton}
       </ResizeGrabber>
-      <Fade key="resize.presentation.fadein" in={!isHovered}>
-        <ResizePresentation $isVertical={isVertical} style={{ ...getWidthOrHeight(1), ...css }} />
-      </Fade>
-      <Fade key="resize.presentation.fadeout" in={isHovered}>
-        <ResizePresentation
-          $isVertical={isVertical}
-          style={{ ...getWidthOrHeight(1), ...hoverCss }}
-        />
-      </Fade>
+      <ResizePresentation
+        $isVertical={isVertical}
+        style={{
+          ...getWidthOrHeight(1),
+          opacity: isHovered ? 0 : undefined,
+          transition: `opacity ${collapseOptions?.buttonTransitionTimeout ?? 200}ms ease-in-out`,
+          ...css,
+        }}
+      />
+      <ResizePresentation
+        $isVertical={isVertical}
+        style={{
+          ...getWidthOrHeight(1),
+          opacity: isHovered ? undefined : 0,
+          transition: `opacity ${collapseOptions?.buttonTransitionTimeout ?? 200}ms ease-in-out`,
+          ...hoverCss,
+        }}
+      />
     </div>
   );
 };

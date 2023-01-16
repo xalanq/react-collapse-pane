@@ -47,7 +47,6 @@ storiesOf('Collapsable Panes', module)
     const minSizes = [50, 50, 50, 50];
     const collapseTransition = 500;
     const grabberSize = 10;
-    const buttonTransition = 'grow';
 
     return (
       <Header>
@@ -55,7 +54,6 @@ storiesOf('Collapsable Panes', module)
           split="vertical"
           collapse={{
             collapseTransitionTimeout: collapseTransition,
-            buttonTransition,
             collapseDirection,
             buttonPositionOffset,
           }}
@@ -71,7 +69,11 @@ storiesOf('Collapsable Panes', module)
         >
           <Logo src={logo} className="App-logo" alt="logo" />
           <p>You can collapse and resize these panes!</p>
-          <Link href="https://b-zurg.github.io/react-collapse-pane/" target="_blank" rel="noopener noreferrer">
+          <Link
+            href="https://b-zurg.github.io/react-collapse-pane/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <p>Check out the Docs</p>
           </Link>
         </SplitPane>
