@@ -15,8 +15,8 @@ import { useUpdateCollapsedSizes } from './callbacks/useUpdateCollapsedSizes';
 import { useCollapsedSize } from './memos/useCollapsedSize';
 import { debounce } from '../helpers';
 import { useRecalculateSizes } from './callbacks/useRecalculateSizes';
-import { useEventListener } from '../../../hooks/useEventListener';
 import { Nullable } from '../../../types/utilities';
+import useResizeObserver from '@react-hook/resize-observer';
 
 export interface ChildPane {
   node: React.ReactChild;
@@ -32,6 +32,7 @@ interface SplitPaneResizeReturns {
 
 interface SplitPaneResizeOptions
   extends Pick<SplitPaneProps, 'split' | 'initialSizes' | 'hooks' | 'collapsedSizes' | 'minSizes'> {
+  containerRef: React.RefObject<HTMLDivElement>;
   collapsedIndices: number[];
   isLtr: boolean;
   collapseOptions?: CollapseOptions;
@@ -49,6 +50,7 @@ export const useSplitPaneResize = (options: SplitPaneResizeOptions): SplitPaneRe
     initialSizes: originalDefaults,
     minSizes: originalMinSizes,
     hooks,
+    containerRef,
     collapsedIndices,
     collapsedSizes: originalCollapsedSizes,
     collapseOptions,
@@ -153,7 +155,7 @@ export const useSplitPaneResize = (options: SplitPaneResizeOptions): SplitPaneRe
     debounce(() => recalculateSizes(), 100),
     [recalculateSizes]
   );
-  useEventListener('resize', resetSizes);
+  useResizeObserver(containerRef, resetSizes);
   useEffect(
     () => recalculateSizes(initialSizes),
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,4 +1,4 @@
-import { addArray } from '../../helpers';
+import { addArray, getMinSize } from '../../helpers';
 import React, { useCallback } from 'react';
 
 export const useRecalculateSizes = ({
@@ -7,6 +7,7 @@ export const useRecalculateSizes = ({
   collapsedIndices,
   setMovedSizes,
   setSizes,
+  minSizes,
 }: {
   getCurrentPaneSizes: () => number[];
   collapsedIndices: number[];
@@ -22,7 +23,10 @@ export const useRecalculateSizes = ({
       const ratio =
         initialSizes && initialSizes.length > 0 ? addArray(curSizes) / addArray(initialSizes) : 1;
       const initialRatioSizes = initialSizes ? initialSizes.map(size => size * ratio) : curSizes;
-      const adjustedSizes = initialRatioSizes.map((size, idx) => {
+      const constrainSizes = initialRatioSizes.map((size, idx) =>
+        Math.max(getMinSize(idx, minSizes), size)
+      );
+      const adjustedSizes = constrainSizes.map((size, idx) => {
         if (collapsedIndices.includes(idx)) {
           return collapsedSize;
         }
@@ -30,7 +34,7 @@ export const useRecalculateSizes = ({
           const totalPrevSizeToAdd = addArray(
             collapsedIndices
               .filter((_collapsedIdx, index) => index <= idx)
-              .map((_i, index) => initialRatioSizes[index] - collapsedSize)
+              .map((_i, index) => constrainSizes[index] - collapsedSize)
           );
           return size + totalPrevSizeToAdd;
         }
@@ -39,5 +43,5 @@ export const useRecalculateSizes = ({
       setMovedSizes(adjustedSizes);
       setSizes(adjustedSizes);
     },
-    [collapsedIndices, collapsedSize, getCurrentPaneSizes, setMovedSizes, setSizes]
+    [collapsedIndices, collapsedSize, getCurrentPaneSizes, setMovedSizes, setSizes, minSizes]
   );

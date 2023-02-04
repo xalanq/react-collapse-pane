@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Pane } from '../Pane';
 import { Resizer } from '../Resizer';
 import { useSplitPaneResize } from './hooks/useSplitPaneResize';
@@ -57,6 +57,7 @@ export interface SplitPaneProps {
 }
 
 export const SplitPane: React.FC<SplitPaneProps> = props => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const collapsedSizes = useCollapsedSizes(props);
   const isLtr = useIsLtr(props);
   const isVertical = props.split === 'vertical';
@@ -75,6 +76,7 @@ export const SplitPane: React.FC<SplitPaneProps> = props => {
 
   const { childPanes, handleDragStart, resizingIndex } = useSplitPaneResize({
     ...props,
+    containerRef,
     isLtr,
     isVertical,
     collapsedIndices,
@@ -137,7 +139,12 @@ export const SplitPane: React.FC<SplitPaneProps> = props => {
   });
 
   return (
-    <Wrapper key="splitpanewrapper" className={splitPaneClass} split={props.split}>
+    <Wrapper
+      key="splitpanewrapper"
+      ref={containerRef}
+      className={splitPaneClass}
+      split={props.split}
+    >
       {entries}
     </Wrapper>
   );

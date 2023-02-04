@@ -81,5 +81,8 @@
   },
   "peerDependencies": {
     "react": ">=16"
+  },
+  "dependencies": {
+    "@react-hook/resize-observer": "^1.2.6"
   }
 }
